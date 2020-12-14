@@ -1,61 +1,57 @@
-//Create variables here
-var dog,happyDog,database,foodS,foodstock,dogg;
-function preload()
-{
-  //load images here
-  dog=loadImage("dogImg.png");
-  happyDog=loadImage("dogImg1.png");
-}
+var dog,dogImg,dogImg1;
+var database;
+var foodS,foodStock;
+var database;
 
+function preload(){
+   dogImg=loadImage("dogImg.png");
+   dogImg1=loadImage("dogImg1.png");
+  }
+
+//Function to set initial environment
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  dogg=createSprite(250,250,10,10);
-  dogg.addImage(dog);
-  dogg.scale=0.1;
   database=firebase.database();
-  foodstock=database.ref("food");
-  foodstock.on("value",readStock);
+  createCanvas(500,500);
 
-  
+  dog=createSprite(250,300,150,150);
+  dog.addImage(dogImg);
+  dog.scale=0.15;
+
+  foodStock=database.ref('food'); //food node in database
+  foodStock.on("value",readStock);
+  textSize(20); 
 }
 
+// function to display UI
+function draw() {
+  background(46,139,87);
+ 
+  if(keyWentDown(UP_ARROW)){
+    writeStock(foodS);
+    dog.addImage(dogImg1);
+  }
 
-function draw() {  
-background(46, 139, 87);
-  if(foodS!==undefined){
-if(keyWentDown(UP_ARROW)){
-writeStock(foodS);
-dogg.addImage(happyDog);
-dogg.scale=0.1;
-}
   drawSprites();
-  //add styles here
-  textSize(30);
-  fill("red");
-  stroke("white");
-  text("FOOD REMAINING:"+foodstock,200,200);
-  textFont("algerian");
-  textSize(20);
-  fill("white");
-  stroke("red");
-  text("Note:Press UP_ARROW key to feed Drago Milk",210,300);
+  fill(255,255,254);
+  stroke("black");
+  text("Food remaining : "+foodS,170,200);
+  textSize(13);
+  text("Note: Press UP_ARROW Key To Feed Drago Milk!",130,10,300,20);
+}
 
-}
-}
+//Function to read values from DB
 function readStock(data){
   foodS=data.val();
 }
+
+//Function to write values in DB
 function writeStock(x){
   if(x<=0){
-    x=0
-  }
-  else{
-    x=x-1
-  }
-  database.ref("food").update({
-    food:x
+    x=0;
+  }else{
+    x=x-1;
+  } 
+  database.ref('/').update({
+    food:x //food node in database
   })
 }
-
-
-
